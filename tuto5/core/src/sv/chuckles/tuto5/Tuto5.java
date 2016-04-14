@@ -5,12 +5,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.BufferUtils;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class Tuto5 extends ApplicationAdapter implements GestureListener {
 	SpriteBatch batch;
@@ -49,6 +53,7 @@ public class Tuto5 extends ApplicationAdapter implements GestureListener {
 	
 	@Override
 	public void dispose() {
+		Gdx.app.log("Tuto5", "Entra al dispose");
 		batch.dispose();
 	}
 
@@ -64,6 +69,16 @@ public class Tuto5 extends ApplicationAdapter implements GestureListener {
 
 	@Override
 	public boolean longPress(float x, float y) {
+		Gdx.app.log("longPress", "Screenshot inicia proceso");
+		byte[] pixels = ScreenUtils.getFrameBufferPixels(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight(), true);
+
+		Pixmap pixmap = new Pixmap(Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight(), Pixmap.Format.RGBA8888);
+		BufferUtils.copy(pixels, 0, pixmap.getPixels(), pixels.length);
+		PixmapIO.writePNG(Gdx.files.external("miPantallazo.png"), pixmap);
+		pixmap.dispose();
+		
+		Gdx.input.vibrate(1000);
+		Gdx.app.log("longPress", "Screenshot tomada");
 		return false;
 	}
 
